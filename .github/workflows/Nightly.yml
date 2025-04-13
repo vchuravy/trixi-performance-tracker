@@ -3,6 +3,7 @@ on:
   schedule:
     # Every day at 16:00 GMT 
     - cron: "* 16 * * *"
+  workflow_dispatch:
 
 permissions:
   contents: write
