@@ -32,15 +32,15 @@ jobs:
       - uses: julia-actions/cache@v2
       - uses: julia-actions/julia-buildpkg@v1
       - name: Build AirspeedVelocity
-          env:
-            JULIA_NUM_THREADS: 2
-          run: |
-            # Lightweight build step, as sometimes the runner runs out of memory:
-            julia -e 'ENV["JULIA_PKG_PRECOMPILE_AUTO"]=0; import Pkg; Pkg.add("AirspeedVelocity")'
-            julia -e 'ENV["JULIA_PKG_PRECOMPILE_AUTO"]=0; import Pkg; Pkg.build("AirspeedVelocity")'
-        - name: Add ~/.julia/bin to PATH
-          run: |
-            echo "$HOME/.julia/bin" >> $GITHUB_PATH
+        env:
+          JULIA_NUM_THREADS: 2
+        run: |
+          # Lightweight build step, as sometimes the runner runs out of memory:
+          julia -e 'ENV["JULIA_PKG_PRECOMPILE_AUTO"]=0; import Pkg; Pkg.add("AirspeedVelocity")'
+          julia -e 'ENV["JULIA_PKG_PRECOMPILE_AUTO"]=0; import Pkg; Pkg.build("AirspeedVelocity")'
+      - name: Add ~/.julia/bin to PATH
+        run: |
+          echo "$HOME/.julia/bin" >> $GITHUB_PATH
       - name: Add 
         run: |
           julia -e 'import Pkg; Pkg.add(["OrdinaryDiffEqLowOrderRK", "OrdinaryDiffEqSSPRK"])'
