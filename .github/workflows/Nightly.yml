@@ -2,7 +2,7 @@ name: Trixi.jl Nightly
 on:
   schedule:
     # Every day at 16:00 GMT 
-    - cron: "* 16 * * *"
+    - cron: "0 16 * * *"
   workflow_dispatch:
 
 permissions:
