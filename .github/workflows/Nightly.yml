@@ -37,7 +37,7 @@ jobs:
             Pkg.instantiate()'
       - name: Run benchmark
         run: |
-          julia --project --color=yes runbenchmark.jl
+          julia --project --color=yes runbenchmarks.jl
       - name: Store benchmark result
         uses: benchmark-action/github-action-benchmark@v1
         with:
