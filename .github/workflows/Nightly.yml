@@ -24,37 +24,26 @@ jobs:
           - x64
     steps:
       - uses: actions/checkout@v4
-        with:
-          repository: 'trixi-framework/Trixi.jl'
       - uses: julia-actions/setup-julia@v1
         with:
           version: ${{ matrix.version }}
           arch: ${{ matrix.arch }}
       - uses: julia-actions/cache@v2
-      - uses: julia-actions/julia-buildpkg@v1
-      - name: Build AirspeedVelocity
-        env:
-          JULIA_NUM_THREADS: 2
+      - name: Instantiate benchmark
         run: |
-          # Lightweight build step, as sometimes the runner runs out of memory:
-          julia -e 'ENV["JULIA_PKG_PRECOMPILE_AUTO"]=0; import Pkg; Pkg.add("AirspeedVelocity")'
-          julia -e 'ENV["JULIA_PKG_PRECOMPILE_AUTO"]=0; import Pkg; Pkg.build("AirspeedVelocity")'
-      - name: Add ~/.julia/bin to PATH
-        run: |
-          echo "$HOME/.julia/bin" >> $GITHUB_PATH
-      - name: Add DiffEq components
-        run: |
-          julia -e 'import Pkg; Pkg.add(["OrdinaryDiffEqLowOrderRK", "OrdinaryDiffEqLowStorageRK", "OrdinaryDiffEqSSPRK"])'
+          julia --project --color=yes -e '
+            using Pkg;
+            Pkg.add(url="https://github.com/trixi-framework/Trixi.jl", rev="main") # Replace with sources
+            Pkg.instantiate()'
       - name: Run benchmark
         run: |
-          mkdir results
-          benchpkg --rev="dirty" --script=benchmark/benchmarks.jl --output-dir=results/ --tune
+          julia --project --color=yes runbenchmark.jl
       - name: Store benchmark result
         uses: benchmark-action/github-action-benchmark@v1
         with:
           name: Julia benchmark result
           tool: 'julia'
-          output-file-path: results/output.json
+          output-file-path: output.json
           # Use personal access token instead of GITHUB_TOKEN due to https://github.community/t/github-action-not-triggering-gh-pages-upon-push/16096
           # github-token: ${{ secrets.GITHUB_TOKEN }}
           auto-push: true
